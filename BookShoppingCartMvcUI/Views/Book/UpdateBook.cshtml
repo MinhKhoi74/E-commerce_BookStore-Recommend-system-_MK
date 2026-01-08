@@ -3,26 +3,26 @@
     Layout = "_AdminLayout";
 }
 <div style="width:50%">
-    <h2> Update Book </h2>
-    <a asp-action="Index" asp-controller="Book" class="btn btn-primary">Back</a>
+    <h2> Cập nhật sách </h2>
+    <a asp-action="Index" asp-controller="Book" class="btn btn-primary">Quay về</a>
     <form asp-action="UpdateBook" enctype="multipart/form-data">
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Image" />
 
         <div class="my-2">
-            <label>Book*</label>
+            <label>Tên sách</label>
             <input type="text" class="form-control" asp-for="BookName" />
             <span asp-validation-for="BookName" class="text-danger"></span>
         </div>
 
         <div class="my-2">
-            <label>Author*</label>
+            <label>Tác giả</label>
             <input type="text" class="form-control" asp-for="AuthorName" />
             <span asp-validation-for="AuthorName" class="text-danger"></span>
         </div>
 
         <div class="my-2">
-            <label>Genre*</label>
+            <label>Thể loại*</label>
             <select class="form-control" asp-for="GenreId" asp-items="Model.GenreList">
                 <option value="">Select Genre</option>
             </select>
@@ -30,13 +30,18 @@
         </div>
 
         <div class="my-2">
-            <label>Price*</label>
+            <label>Giá</label>
             <input type="number" class="form-control" asp-for="Price" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
+        <div class="my-2">
+            <label>Mô tả</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
 
         <div class="my-2">
-            <label>Image</label>
+            <label>Ảnh</label>
             @if(!string.IsNullOrEmpty(Model.Image))
             {
                 <img src="/images/@Model.Image" style="width:100px;height:80px"/>
@@ -45,7 +50,13 @@
         </div>
 
         <div class="my-2">
-            <button type="submit" class="btn btn-info">Update</button>
+            <button type="submit" class="btn btn-info">Cập nhật</button>
         </div>
     </form>
 </div>
+<!-- Thêm CKEditor từ CDN -->
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script>
+    // Khởi tạo CKEditor cho textarea có id là Description
+    CKEDITOR.replace('Description');
+</script>

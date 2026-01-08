@@ -54,10 +54,15 @@ namespace BookShoppingCartMvcUI.Repositories
         public async Task<IEnumerable<Order>> UserOrders(bool getAll = false)
         {
             var orders = _db.Orders
-                           .Include(x => x.OrderStatus)
-                           .Include(x => x.OrderDetail)
-                           .ThenInclude(x => x.Book)
-                           .ThenInclude(x => x.Genre).AsQueryable();
+                .Include(x => x.OrderStatus)
+                .Include(x => x.OrderDetail)
+                    .ThenInclude(x => x.Book)
+                        .ThenInclude(b => b.Genre) // trước hết load Genre
+                .Include(x => x.OrderDetail)
+                    .ThenInclude(x => x.Book)
+                        .ThenInclude(b => b.UserInteractions) // sau đó load UserInteractions
+                .AsQueryable();
+
             if (!getAll)
             {
                 var userId = GetUserId();

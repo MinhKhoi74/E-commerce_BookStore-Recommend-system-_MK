@@ -1,0 +1,19 @@
+﻿@model IEnumerable<BookShoppingCartMvcUI.Models.DTOs.TopNSoldBookModel>
+
+<div class="p-4 bg-light rounded">
+    <h3 style="color: #e53935;"><i class="bi bi-book"></i> Bảng xếp hạng sách bán chạy</h3>
+
+    @foreach (var book in Model)
+    {
+        <div class="d-flex justify-content-between align-items-center my-3 p-3 bg-white rounded shadow-sm">
+            <div class="d-flex align-items-center">
+                <img src="@book.Image" alt="Book Image" style="width: 80px; height: 100px; object-fit: cover; border-radius: 8px;" />
+                <div class="ms-3">
+                    <div style="font-size: 1.1rem; font-weight: bold;">@book.BookName</div>
+                    <div style="color: #666;">Đã bán: @book.TotalUnitSold.ToString("N0")</div>
+                </div>
+            </div>
+            <a href="/Books/Details/@book.BookId" class="btn btn-outline-dark">Xem chi tiết</a>
+        </div>
+    }
+</div>

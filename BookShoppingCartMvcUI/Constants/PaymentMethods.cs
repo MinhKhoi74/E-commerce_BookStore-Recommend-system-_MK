@@ -2,6 +2,6 @@
 
 public enum PaymentMethods
 {
-    COD=1,
-    Online
+    COD = 1,
+    VNPay
 }

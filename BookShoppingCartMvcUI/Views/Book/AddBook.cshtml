@@ -3,25 +3,25 @@
     Layout = "_AdminLayout";
 }
 <div style="width:50%">
-    <h2> Add Book </h2>
-    <a asp-action="Index" asp-controller="Book" class="btn btn-primary">Back</a>
+    <h2> Thêm sách </h2>
+    <a asp-action="Index" asp-controller="Book" class="btn btn-primary">Quay về</a>
     <form asp-action="AddBook" enctype="multipart/form-data">
         @* <input type="hidden" asp-for="Id" /> *@
 
         <div class="my-2">
-            <label>Book*</label>
+            <label>Tên sách</label>
             <input type="text" class="form-control" asp-for="BookName" />
             <span asp-validation-for="BookName" class="text-danger"></span>
         </div>
 
         <div class="my-2">
-            <label>Author*</label>
+            <label>Tác giả</label>
             <input type="text" class="form-control" asp-for="AuthorName" />
             <span asp-validation-for="AuthorName" class="text-danger"></span>
         </div>
 
         <div class="my-2">
-            <label>Genre*</label>
+            <label>Thể loại</label>
             <select class="form-control" asp-for="GenreId" asp-items="Model.GenreList">
                 <option value="">Select Genre</option>
             </select>
@@ -29,18 +29,35 @@
         </div>
 
         <div class="my-2">
-            <label>Price*</label>
+            <label>Giá</label>
             <input type="number" class="form-control" asp-for="Price" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
 
+
         <div class="my-2">
-            <label>Image</label>
+            <label>Mô tả*</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+
+
+
+
+        <div class="my-2">
+            <label>Ảnh</label>
             <input type="file" class="form-control" asp-for="ImageFile" />
         </div>
 
         <div class="my-2">
-            <button type="submit" class="btn btn-info">Add</button>
+            <button type="submit" class="btn btn-info">Thêm</button>
         </div>
     </form>
 </div>
+<!-- Thêm CKEditor từ CDN -->
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script>
+    // Khởi tạo CKEditor cho textarea có id là Description
+    CKEDITOR.replace('Description');
+</script>

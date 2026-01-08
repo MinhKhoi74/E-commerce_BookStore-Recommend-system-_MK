@@ -1,0 +1,89 @@
+﻿@model IEnumerable<BookShoppingCartMvcUI.Models.DTOs.TopNSoldBookModel>
+
+<div class="container my-5 p-4" style="background: #fff4f0; border-radius: 15px;">
+
+    <!-- Header -->
+    <div class="bg-danger text-white rounded shadow-sm p-3 mb-4 d-flex align-items-center">
+        <i class="bi bi-bar-chart-line-fill me-2"></i>
+        <h4 class="mb-0 fw-bold">Bảng xếp hạng sách bán chạy</h4>
+    </div>
+
+    <div class="row g-3">
+
+        <!-- Left Image Box -->
+        <div class="col-md-5">
+            <div class="bg-white rounded shadow-sm d-flex justify-content-center align-items-center p-3" style="height: 500px; border: 2px solid #ff6b3d;">
+                <img src="/images/NoImage.png" id="selectedBookImage" class="img-fluid" style="max-height: 100%; object-fit: contain;">
+            </div>
+        </div>
+
+        <!-- Right Ranking List -->
+        <div class="col-md-7">
+            <div class="bg-white rounded shadow-sm p-3" style="height: 500px; overflow-y: auto;">
+                @if (Model != null && Model.Any())
+                {
+                    var rank = 1;
+
+                    foreach (var book in Model)
+                    {
+                        var imagePath = !string.IsNullOrEmpty(book.Image)
+                        ? Url.Content("~/images/" + book.Image)
+                        : Url.Content("~/images/NoImage.png");
+
+                        <div class="ranking-item d-flex align-items-center justify-content-between mb-3 p-2 rounded border border-light"
+                             onclick="selectBook('@imagePath')"
+                        @(rank == 1 ? Html.Raw("id='firstBook'") : null)>
+
+                            <div class="d-flex align-items-center">
+
+                                <!-- Rank Badge -->
+                                <div class="badge text-white me-3 d-flex align-items-center justify-content-center"
+                                     style="width: 40px; height: 40px; font-size: 1rem; background: linear-gradient(135deg, #ff7b3d, #ff3d00);">
+                                    @rank
+                                </div>
+
+                                <!-- Image -->
+                                <div class="me-3" style="width: 55px; height: 75px; overflow: hidden;">
+                                    <img src="@imagePath" class="rounded w-100 h-100" style="object-fit: cover;">
+                                </div>
+
+                                <!-- Info -->
+                                <div>
+                                    <div class="fw-bold text-dark">@book.BookName</div>
+                                    <div class="text-danger" style="font-size: 0.9rem;">Đã bán: @book.TotalUnitSold.ToString("N0")</div>
+                                </div>
+                            </div>
+
+                            <a asp-controller="DetailedBook"
+                               asp-action="Details"
+                               asp-route-id="@book.BookId"
+                               class="btn btn-outline-danger btn-sm fw-bold">
+                                Xem
+                            </a>
+                        </div>
+
+                        rank++;
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Không có dữ liệu sách bán chạy.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hover hiệu ứng dịch chuyển + shadow */
+    .ranking-item {
+        transition: all 0.3s ease;
+    }
+
+        .ranking-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(255, 77, 0, 0.4);
+            background-color: #fff0eb;
+            cursor: pointer;
+        }
+</style>

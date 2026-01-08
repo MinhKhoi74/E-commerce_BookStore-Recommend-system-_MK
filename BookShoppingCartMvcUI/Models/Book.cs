@@ -9,7 +9,7 @@ namespace BookShoppingCartMvcUI.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(40)]
+        [MaxLength(100)]
         public string? BookName { get; set; }
 
         [Required]
@@ -24,12 +24,13 @@ namespace BookShoppingCartMvcUI.Models
         public List<OrderDetail> OrderDetail { get; set; }
         public List<CartDetail> CartDetail { get; set; }
         public Stock Stock { get; set; }
+        public string? Description { get; set; }
 
         [NotMapped]
         public string GenreName { get; set; }
         [NotMapped]
         public int Quantity { get; set; }
 
-
+        public ICollection<UserInteraction> UserInteractions { get; set; } = new List<UserInteraction>();
     }
 }

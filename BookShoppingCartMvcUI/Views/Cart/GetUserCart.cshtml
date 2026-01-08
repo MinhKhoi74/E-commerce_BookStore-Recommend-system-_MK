@@ -3,67 +3,87 @@
     ViewData["Title"] = "GetUserCart";
 }
 
-<div style="width:90%;margin:auto" class="mt-2">
+<div class="container mt-4">
     @if (Model != null && Model.CartDetails != null && Model.CartDetails.Count > 0)
     {
-        <h5>My Cart</h5>
+        <h4 class="mb-4 fw-bold text-primary text-center display-5">
+            GIỎ HÀNG CỦA BẠN
+        </h4>
 
-        <table class="table table-striped">
-            <tr>
-                <th>Book</th>
-                <th>Image</th>
-                <th>Genre</th>
-                <th>Unit Price(INR)</th>
-                <th>Total Price</th>
-                <th>Action</th>
-            </tr>
-            @foreach (var item in Model.CartDetails)
-            {
-                <tr>
-                    <td>@item.Book.BookName</td>
-                    <td>
-                        @if (string.IsNullOrEmpty(item.Book.Image))
-                        {
-                            <img src="/images/NoImage.png" style="width:80px;height:100px" />
-                        }
-                        else
-                        {
-                            <img src="/images/@item.Book.Image" style="width:80px;height:100px" />
-                        }
-                    </td>
-                    <td>@item.Book.Genre.GenreName</td>
-                    <td>@item.Book.Price X @item.Quantity</td>
-                    <td>@(item.Book.Price * item.Quantity)</td>
-                    <td>
-                        @* Increase Quantity button should be invisible if not enough stock*@
-                        @if (item.Quantity < item.Book.Stock.Quantity)
-                        {
-                            <a class="btn btn-info" href="/Cart/AddItem?bookId=@item.BookId&&redirect=1">+</a>
-                        }
-                        else
-                        {
-                            <span style="border: 1px solid;padding: 8px 8px;color: red;border-radius: 5px;margin-right:4px">Out of stock </span>
-                        }
-                        @* Decrement button *@
-                        <a class="btn btn-info" href="/cart/removeitem?bookid=@item.BookId">-</a>
-                    </td>
-                </tr>
-            }
-        </table>
 
-        <div class="my-2">
-            <h5>Total(INR): </h5>
-            @(Model.CartDetails.Select(item => item.Book.Price * item.Quantity).Sum())
+        <div class="mb-3">
+            <a class="btn btn-outline-primary" href="/Home">
+                <i class="bi bi-arrow-left-circle me-1"></i> Tiếp tục mua sắm
+            </a>
         </div>
 
-        <div class="my-2">
-            <a class="btn btn-primary" href="/Cart/Checkout">Checkout</a>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead style="background: linear-gradient(to right, #2c3e50, #16a085);" class="text-light">
+                    <tr>
+                        <th>Sách</th>
+                        <th>Ảnh</th>
+                        <th>Thể loại</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody style="background: linear-gradient(to right, #d0eefd, #ffffff);">
+                    @foreach (var item in Model.CartDetails)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@item.Book.BookName</td>
+                            <td>
+                                <img src="/images/@(string.IsNullOrEmpty(item.Book.Image) ? "NoImage.png" : item.Book.Image)"
+                                     class="img-thumbnail" style="width: 80px; height: 100px; object-fit: cover;" />
+                            </td>
+                            <td>
+                                <span class="badge" style="background-color: #ffeeba; color: #856404;">
+                                    @item.Book.Genre.GenreName
+                                </span>
+                            </td>
+                            <td>@item.Book.Price X @item.Quantity</td>
+                            <td class="fw-bold text-danger">@((item.Book.Price * item.Quantity).ToString("N0"))</td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    @if (item.Quantity < item.Book.Stock.Quantity)
+                                    {
+                                        <a class="btn btn-sm btn-success" href="/Cart/AddItem?bookId=@item.BookId&&redirect=1">+</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Out of stock</span>
+                                    }
+
+                                    <a class="btn btn-sm btn-warning" href="/Cart/RemoveItem?bookId=@item.BookId">-</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
 
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h5 class="fw-bold">
+                Tổng tiền:
+                <span class="text-success">
+                    @Model.CartDetails.Select(item => item.Book.Price * item.Quantity).Sum().ToString("N0") ₫
+                </span>
+            </h5>
+            <a class="btn btn-primary btn-lg" href="/Cart/Checkout">
+                Thanh toán <i class="bi bi-arrow-right-circle ms-1"></i>
+            </a>
+        </div>
     }
     else
     {
-        <h5>Cart is empty</h5>
+        <div class="alert alert-info text-center mt-5">
+            <h5>Giỏ hàng của bạn đang trống.</h5>
+            <a class="btn btn-outline-primary mt-2" href="/Home">
+                <i class="bi bi-arrow-left-circle me-1"></i> Tiếp tục mua sắm
+            </a>
+        </div>
     }
 </div>
-

@@ -1,77 +1,152 @@
 ﻿@model IEnumerable<Order>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
 @{
-}
-<div style="width:100%" class="mt-2">
-    <a href="/Identity/Account/Manage" class="btn btn-primary my-2">Back</a>
+    ViewData["Title"] = "YourOrders";
 
-    <h4>My Orders</h4>
-    @if (Model != null && Model.Count() > 0)
+    Func<int?, int?> MapRatingToStars = (rating) =>
     {
-        <table class="table table-striped">
-            <tr>
-                <th>OrderDate</th>
-                <th>OrderStatus</th>
-            </tr>
-            @foreach (var order in Model)
-            {
-                <tr>
-                    <td>@order.CreateDate.ToString("dd-MM-yyyy")</td>
-                    <td>@order.OrderStatus.StatusName</td>
-                </tr>
-                @if (order.OrderDetail != null && order.OrderDetail.Count > 0)
-                {
+        return rating switch
+        {
+            -10 => 1,
+            -5 => 2,
+            0 => 3,
+            5 => 4,
+            10 => 5,
+            _ => null
+        };
+    };
+
+    var currentUserId = UserManager.GetUserId(User);
+}
+
+<div class="container mt-4">
+    <div class="mb-3">
+        <a href="/Identity/Account/Manage" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left-circle me-1"></i> Quay về
+        </a>
+    </div>
+
+    <h4 class="text-center text-primary fw-bold mb-4 display-6">
+        🧾 ĐƠN HÀNG CỦA BẠN
+    </h4>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead style="background: linear-gradient(to right, #2c3e50, #16a085);" class="text-white">
                     <tr>
-                        <td>
-                            <table class="table table-striped">
-                                <tr>
-                                    <td>
-                                        Total:
-                                    </td>
-                                    <td>
-                                        @(order.OrderDetail.Select(item => item.Book.Price * item.Quantity).Sum())
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Book</th>
-                                    <th>Image</th>
-                                    <th>Genre</th>
-                                    <th>Unit Price(INR)</th>
-                                    <th>Total Price</th>
-                                </tr>
-                                @foreach (var item in order.OrderDetail)
-                                {
-                                    <tr>
-                                        <td>@item.Book.BookName</td>
-                                        <td>
-                                            @if (string.IsNullOrEmpty(item.Book.Image))
-                                            {
-                                                <img src="/images/NoImage.png" style="width:80px;height:100px" />
-                                            }
-                                            else
-                                            {
-                                                <img src="/images/@item.Book.Image" style="width:80px;height:100px" />
-                                            }
-                                        </td>
-                                        <td>@item.Book.Genre.GenreName</td>
-                                        <td>@item.Book.Price X @item.Quantity</td>
-                                        <td> @(item.Book.Price * item.Quantity) </td>
-                                    </tr>
-                                }
-                            </table>
-                        </td>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
                     </tr>
-                }
-            }
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.CreateDate.ToString("dd-MM-yyyy")</td>
+                            <td>
+                                <span class="badge bg-info text-white">@order.OrderStatus.StatusName</span>
+                            </td>
+                        </tr>
 
+                        @if (order.OrderDetail != null && order.OrderDetail.Any())
+                        {
+                            <tr>
+                                <td colspan="2">
+                                    <div style="background: linear-gradient(to right, #d0eefd, #ffffff);" class="card shadow-sm border-0 p-3">
+                                        <div class="mb-2 text-end fw-bold">
+                                            Tổng tiền:
+                                            <span class="text-danger">
+                                                @order.OrderDetail.Select(item => item.Book.Price * item.Quantity).Sum().ToString("N0") ₫
+                                            </span>
+                                        </div>
+
+                                        <table class="table table-striped align-middle text-center">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Sách</th>
+                                                    <th>Ảnh</th>
+                                                    <th>Thể loại</th>
+                                                    <th>Đơn giá</th>
+                                                    <th>Thành tiền</th>
+                                                    <th>Đánh giá</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in order.OrderDetail)
+                                                {
+                                                    // Lấy UserInteraction của user hiện tại
+                                                    var userInteraction = item.Book.UserInteractions?
+                                                    .FirstOrDefault(ui => ui.UserId == currentUserId);
+
+                                                    var stars = MapRatingToStars((int?)userInteraction?.Rating);
+
+
+                                                    <tr>
+                                                        <td>@item.Book.BookName</td>
+                                                        <td>
+                                                            <img src="/images/@(string.IsNullOrEmpty(item.Book.Image) ? "NoImage.png" : item.Book.Image)"
+                                                                 class="img-thumbnail"
+                                                                 style="width: 80px; height: 100px; object-fit: cover;" />
+                                                        </td>
+                                                        <td><span class="badge bg-secondary">@item.Book.Genre.GenreName</span></td>
+                                                        <td>@item.Book.Price.ToString("N0") ₫ x @item.Quantity</td>
+                                                        <td class="fw-bold text-danger">
+                                                            @((item.Book.Price * item.Quantity).ToString("N0")) ₫
+                                                        </td>
+                                                        <td>
+                                                            @if (userInteraction == null || stars == null)
+                                                            {
+                                                                <!-- Form đánh giá -->
+                                                                <form asp-action="SubmitRating" asp-controller="UserOrder" method="post" class="d-flex align-items-center">
+                                                                    <input type="hidden" name="BookId" value="@item.BookId" />
+                                                                    <select name="Stars" class="form-select form-select-sm me-2" style="width: auto;">
+                                                                        <option value="">--Sao--</option>
+                                                                        <option value="1">1 ⭐</option>
+                                                                        <option value="2">2 ⭐⭐</option>
+                                                                        <option value="3">3 ⭐⭐⭐</option>
+                                                                        <option value="4">4 ⭐⭐⭐⭐</option>
+                                                                        <option value="5">5 ⭐⭐⭐⭐⭐</option>
+                                                                    </select>
+                                                                    <button type="submit" class="btn btn-sm btn-primary">Gửi</button>
+                                                                </form>
+                                                            }
+                                                            else
+                                                            {
+                                                                <!-- Hiển thị sao đã đánh giá -->
+                                                                <div class="text-warning fs-5">
+                                                                    @for (int i = 1; i <= stars; i++)
+                                                                    {
+                                                                        <i class="bi bi-star-fill"></i>
+                                                                    }
+                                                                    @for (int i = stars.Value + 1; i <= 5; i++)
+                                                                    {
+                                                                        <i class="bi bi-star"></i>
+                                                                    }
+                                                                    <span class="text-success fw-bold ms-2">✓ Đã đánh giá</span>
+                                                                </div>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     }
     else
     {
-        <h5>No orders</h5>
+        <div class="alert alert-warning text-center">
+            <h5>Chưa có đơn hàng nào.</h5>
+        </div>
     }
 </div>
-
-
-
-

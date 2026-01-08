@@ -37,8 +37,11 @@ namespace BookShoppingCartMvcUI.Migrations
 
                     b.Property<string>("BookName")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("GenreId")
                         .HasColumnType("int");
@@ -147,8 +150,20 @@ namespace BookShoppingCartMvcUI.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Vnp_BankCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Vnp_PayDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Vnp_TransactionNo")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -448,6 +463,40 @@ namespace BookShoppingCartMvcUI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("UserInteraction", b =>
+                {
+                    b.Property<int>("InteractionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InteractionId"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InteractionDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Score")
+                        .HasColumnType("float");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("InteractionId");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserInteractions");
+                });
+
             modelBuilder.Entity("BookShoppingCartMvcUI.Models.Book", b =>
                 {
                     b.HasOne("BookShoppingCartMvcUI.Models.Genre", "Genre")
@@ -570,6 +619,25 @@ namespace BookShoppingCartMvcUI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UserInteraction", b =>
+                {
+                    b.HasOne("BookShoppingCartMvcUI.Models.Book", "Book")
+                        .WithMany("UserInteractions")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BookShoppingCartMvcUI.Models.Book", b =>
                 {
                     b.Navigation("CartDetail");
@@ -578,6 +646,8 @@ namespace BookShoppingCartMvcUI.Migrations
 
                     b.Navigation("Stock")
                         .IsRequired();
+
+                    b.Navigation("UserInteractions");
                 });
 
             modelBuilder.Entity("BookShoppingCartMvcUI.Models.Genre", b =>

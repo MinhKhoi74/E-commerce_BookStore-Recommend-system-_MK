@@ -1,36 +1,66 @@
 ﻿@model OrderDetailModalDTO
 
-<div class="modal fade" id="modal-@Model.DivId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-@Model.DivId" tabindex="-1" aria-labelledby="orderDetailLabel-@Model.DivId" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Order Detail</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            <!-- HEADER -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="orderDetailLabel-@Model.DivId">
+                    Chi tiết đơn hàng (#@Model.DivId)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
+
+            <!-- BODY -->
             <div class="modal-body">
-                <table class="table table-striped">
-                    <tr>
-                        <th>Book</th>
-                        <th>Genre</th>
-                        <th>Price</th>
-                        <th>Quantiy</th>
-                        <th>TotalPrice</th>
-                    </tr>
-                    @foreach (var item in Model.OrderDetail)
-                    {
+
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <td>@item.Book.BookName</td>
-                            <td>@item.Book.Genre.GenreName</td>
-                            <td>@item.UnitPrice</td>
-                            <td>@item.Quantity</td>
-                            <td>@(item.Quantity * item.UnitPrice)</td>
+                            <th style="width: 30%;">Tên sách</th>
+                            <th>Thể loại</th>
+                            <th class="text-end">Giá</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Thành tiền</th>
                         </tr>
-                    }
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.OrderDetail)
+                        {
+                            <tr>
+                                <td>@item.Book.BookName</td>
+                                <td>@item.Book.Genre.GenreName</td>
+                                <td class="text-end">@item.UnitPrice.ToString("N0") ₫</td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">@((item.UnitPrice * item.Quantity).ToString("N0")) ₫</td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
+
+                <!-- TOTAL SUMMARY -->
+                <div class="d-flex justify-content-end mt-3">
+                    <div class="p-3 border rounded bg-light">
+                        <h5 class="m-0">
+                            Tổng tiền:
+                            <span class="text-danger fw-bold">
+                                @Model.OrderDetail.Sum(x => x.UnitPrice * x.Quantity).ToString("N0") ₫
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+
             </div>
+
+            <!-- FOOTER -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Đóng
+                </button>
             </div>
+
         </div>
     </div>
 </div>

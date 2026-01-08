@@ -4,19 +4,19 @@
 }
 
 <div style="width:50%">
-<h2> Manage Stock </h2>
-<a asp-action="Index" asp-controller="Stock" class="btn btn-primary">Back</a>
+<h2> Quản lí tồn kho </h2>
+<a asp-action="Index" asp-controller="Stock" class="btn btn-primary">Quay về</a>
 <form asp-action="ManangeStock">
    <input type="hidden" asp-for="BookId" />
 
    <div class="my-2">
-      <label>Quantity</label>
+      <label>Số lượng</label>
       <input type="number" class="form-control" asp-for="Quantity" />
       <span asp-validation-for="Quantity" class="text-danger"></span>
    </div>
 
    <div class="my-2">
-      <button type="submit" class="btn btn-info">Update</button>
+      <button type="submit" class="btn btn-info">Cập nhật</button>
    </div>
 </form>
 </div>

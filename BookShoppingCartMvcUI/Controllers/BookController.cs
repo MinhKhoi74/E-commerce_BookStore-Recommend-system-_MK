@@ -53,12 +53,12 @@ public class BookController : Controller
         {
             if (bookToAdd.ImageFile != null)
             {
-                if(bookToAdd.ImageFile.Length> 1 * 1024 * 1024)
+                if (bookToAdd.ImageFile.Length > 1 * 1024 * 1024)
                 {
                     throw new InvalidOperationException("Image file can not exceed 1 MB");
                 }
-                string[] allowedExtensions = [".jpeg",".jpg",".png"];
-                string imageName=await _fileService.SaveFile(bookToAdd.ImageFile, allowedExtensions);
+                string[] allowedExtensions = [".jpeg", ".jpg", ".png"];
+                string imageName = await _fileService.SaveFile(bookToAdd.ImageFile, allowedExtensions);
                 bookToAdd.Image = imageName;
             }
             // manual mapping of BookDTO -> Book
@@ -69,7 +69,8 @@ public class BookController : Controller
                 AuthorName = bookToAdd.AuthorName,
                 Image = bookToAdd.Image,
                 GenreId = bookToAdd.GenreId,
-                Price = bookToAdd.Price
+                Price = bookToAdd.Price,
+                Description = bookToAdd.Description
             };
             await _bookRepo.AddBook(book);
             TempData["successMessage"] = "Book is added successfully";
@@ -77,7 +78,7 @@ public class BookController : Controller
         }
         catch (InvalidOperationException ex)
         {
-            TempData["errorMessage"]= ex.Message;
+            TempData["errorMessage"] = ex.Message;
             return View(bookToAdd);
         }
         catch (FileNotFoundException ex)
@@ -95,7 +96,7 @@ public class BookController : Controller
     public async Task<IActionResult> UpdateBook(int id)
     {
         var book = await _bookRepo.GetBookById(id);
-        if(book==null)
+        if (book == null)
         {
             TempData["errorMessage"] = $"Book with the id: {id} does not found";
             return RedirectToAction(nameof(Index));
@@ -104,16 +105,17 @@ public class BookController : Controller
         {
             Text = genre.GenreName,
             Value = genre.Id.ToString(),
-            Selected=genre.Id==book.GenreId
+            Selected = genre.Id == book.GenreId
         });
-        BookDTO bookToUpdate = new() 
-        { 
+        BookDTO bookToUpdate = new()
+        {
             GenreList = genreSelectList,
-            BookName=book.BookName,
-            AuthorName=book.AuthorName,
-            GenreId=book.GenreId,
-            Price=book.Price,
-            Image=book.Image 
+            BookName = book.BookName,
+            AuthorName = book.AuthorName,
+            GenreId = book.GenreId,
+            Price = book.Price,
+            Image = book.Image,
+            Description = book.Description
         };
         return View(bookToUpdate);
     }
@@ -125,7 +127,7 @@ public class BookController : Controller
         {
             Text = genre.GenreName,
             Value = genre.Id.ToString(),
-            Selected=genre.Id==bookToUpdate.GenreId
+            Selected = genre.Id == bookToUpdate.GenreId
         });
         bookToUpdate.GenreList = genreSelectList;
 
@@ -150,16 +152,17 @@ public class BookController : Controller
             // manual mapping of BookDTO -> Book
             Book book = new()
             {
-                Id=bookToUpdate.Id,
+                Id = bookToUpdate.Id,
                 BookName = bookToUpdate.BookName,
                 AuthorName = bookToUpdate.AuthorName,
                 GenreId = bookToUpdate.GenreId,
                 Price = bookToUpdate.Price,
-                Image = bookToUpdate.Image
+                Image = bookToUpdate.Image,
+                Description = bookToUpdate.Description
             };
             await _bookRepo.UpdateBook(book);
             // if image is updated, then delete it from the folder too
-            if(!string.IsNullOrWhiteSpace(oldImage))
+            if (!string.IsNullOrWhiteSpace(oldImage))
             {
                 _fileService.DeleteFile(oldImage);
             }

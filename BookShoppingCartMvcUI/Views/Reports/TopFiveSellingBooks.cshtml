@@ -1,46 +1,69 @@
-@model TopNSoldBooksVm
+﻿@model TopNSoldBooksVm
+@{
+    Layout = "_AdminLayout";
+}
 
-<h3>Top selling books</h3>
-@if(Model!=null)
-{
-<div>
- <form class="my-2 d-flex" style="gap:5px" asp-action="TopFiveSellingBooks" method="get">
-    <input type="date" style="width: 200px;" class="form-control" name="sDate"/>
-    <input type="date" style="width: 200px;" class="form-control"  name="eDate"/>
-    <button class="btn btn-primary">Filter</button>
-    <a class="btn btn-primary" href="/Reports/TopFiveSellingBooks">Clear</a>
- </form>
+<div class="container-fluid mt-4">
 
- <h4>Showing Results from @Model.StartDate.ToString("dd-MMM-yyyy") to @Model.EndDate.ToString("dd-MMM-yyyy")</h4>
+    <h3 class="mb-3 text-primary">📈 Sách bán chạy</h3>
 
- @if(Model.TopNSoldBooks.Count()==0)
- {
-     <div class="my-3" style="font-size:16px; font-weight:bold">
-        No records found
-     </div>
- }
- else
- {
- <table style="width: 50%;" class="table table-striped">
-  <thead>
-    <th>Book</th>
-    <th>Sold Units</th>
-  </thead>
-
-  <tbody>
-    @foreach (var item in Model.TopNSoldBooks)
+    @if (Model != null)
     {
-      <tr>
-       <td>@item.BookName by @item.AuthorName</td>
-       <td>@item.TotalUnitSold</td>
-      </tr>
+        <!-- 🔍 FORM LỌC -->
+        <form class="row g-2 align-items-center mb-3" asp-action="TopFiveSellingBooks" method="get">
+            <div class="col-auto">
+                <input type="date" class="form-control" name="sDate" />
+            </div>
+            <div class="col-auto">
+                <input type="date" class="form-control" name="eDate" />
+            </div>
+            <div class="col-auto d-flex gap-2">
+                <button type="submit" class="btn btn-success">Tìm</button>
+                <a class="btn btn-warning" href="/Reports/TopFiveSellingBooks">Xóa</a>
+            </div>
+        </form>
+
+        <!-- 🔹 Thông tin kết quả -->
+        <h5 class="mb-3">
+            Kết quả từ
+            <span class="text-primary">@Model.StartDate.ToString("dd-MMM-yyyy")</span>
+            đến
+            <span class="text-primary">@Model.EndDate.ToString("dd-MMM-yyyy")</span>
+        </h5>
+
+        <!-- 🔶 Bảng kết quả -->
+        @if (Model.TopNSoldBooks.Count() == 0)
+        {
+            <div class="alert alert-warning">
+                Không có dữ liệu.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sách</th>
+                            <th>Lượt bán</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.TopNSoldBooks)
+                        {
+                            <tr>
+                                <td>@item.BookName by @item.AuthorName</td>
+                                <td>@item.TotalUnitSold</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
     }
-  </tbody>
- </table>
- }
+    else
+    {
+        <div class="alert alert-danger">Something went wrong</div>
+    }
+
 </div>
-}
-else
-{
-    <h4>Something went wrong</h4>
-}

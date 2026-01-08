@@ -18,4 +18,5 @@ namespace BookShoppingCartMvcUI.Models
         public Order Order { get; set; }
         public Book Book { get; set; }
     }
+
 }

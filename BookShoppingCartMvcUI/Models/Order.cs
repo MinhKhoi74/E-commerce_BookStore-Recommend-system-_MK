@@ -33,5 +33,10 @@ namespace BookShoppingCartMvcUI.Models
 
         public OrderStatus OrderStatus { get; set; }
         public List<OrderDetail> OrderDetail { get; set; }
+        [Required]
+        public decimal TotalAmount { get; set; }                // ⭐ Tổng tiền
+        public string? Vnp_TransactionNo { get; set; }          // ⭐ Mã GD VNPay
+        public string? Vnp_BankCode { get; set; }               // ⭐ Mã ngân hàng
+        public string? Vnp_PayDate { get; set; }                // ⭐ Ngày thanh toán
     }
 }

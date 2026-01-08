@@ -3,49 +3,88 @@
     ViewData["Title"] = "Checkout";
 }
 
-<h2>Checkout</h2>
-<form asp-action="Checkout">
-    <div class="py-2">
-        <label asp-for="Name">Name*</label>
-        <input type="text" class="form-control" asp-for="Name" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+@inject BookShoppingCartMvcUI.Repositories.ICartRepository CartRepo
+
+@{
+    var cartTotal = await CartRepo.GetCartTotal();
+    var isCartEmpty = cartTotal <= 0;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <h2 class="text-center text-primary mb-4 display-6">
+                        <i class="bi bi-credit-card-2-front me-2"></i>Thanh toán
+                    </h2>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Họ tên*</label>
+                            <input type="text" class="form-control" asp-for="Name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email*</label>
+                            <input type="text" class="form-control" asp-for="Email" readonly />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MobileNumber" class="form-label">Số điện thoại*</label>
+                            <input type="text" class="form-control" asp-for="MobileNumber" />
+                            <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label">Địa chỉ nhận hàng*</label>
+                            <textarea class="form-control" asp-for="Address" rows="4"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="PaymentMethod" class="form-label">Phương thức thanh toán*</label>
+                            <select asp-for="PaymentMethod" class="form-select">
+                                <option value="">Chọn phương thức</option>
+                                <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                            </select>
+                            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <h5>Tổng tiền: <strong>@cartTotal.ToString("C0")</strong></h5>
+                        </div>
+
+                        <div class="text-end">
+                            <!-- Nút quay về -->
+                            <a class="btn btn-outline-primary" href="/Cart/GetUserCart">
+                                <i class="bi bi-arrow-left-circle me-1"></i> Quay về giỏ hàng
+                            </a>
+
+                            <!-- Nút thanh toán COD -->
+                            <button type="submit" class="btn btn-info px-4"
+                                    formaction="@Url.Action("Checkout", "Cart")"
+                                    formmethod="post"
+                            @(isCartEmpty ? "disabled" : "")>
+                                Thanh toán COD
+                            </button>
+
+                            <!-- Nút thanh toán Online VNPAY -->
+                            
+                        </div>
+                    </form>
+
+                    @if (isCartEmpty)
+                    {
+                        <div class="alert alert-warning mt-3">
+                            Giỏ hàng đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
+    ```
 
-    <div class="py-2">
-        <label asp-for="Email">Email*</label>
-        <input type="text" class="form-control" asp-for="Email" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-
-    </div>
-
-    <div class="py-2">
-        <label asp-for="MobileNumber">MobileNumber*</label>
-        <input type="text" class="form-control" asp-for="MobileNumber" />
-        <span asp-validation-for="MobileNumber" class="text-danger"></span>
-    </div>
-
-
-    <div class="py-2">
-        <label asp-for="Address">Address*</label>
-        <textarea class="form-control" asp-for="Address" rows="5"> </textarea>
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-
-    <div class="py-2">
-        <span class="mr-2">COD*</span>
-        <select asp-for="PaymentMethod" class="form-control">
-            <option value="">Select Payment Method</option>
-            @foreach (var method in Enum.GetValues(typeof(BookShoppingCartMvcUI.Constants.PaymentMethods)))
-            {
-                <option value="@method.ToString()">@method.ToString()</option>
-
-            }
-        </select>
-        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
-    </div>
-
-    <div class="py-2">
-        <button type="submit" c class="btn btn-info">Next</button>
-
-    </div>
-</form>
+</div>

@@ -1,0 +1,154 @@
+﻿body {
+    background-color: #ecf0f1
+}
+/*bảng xếp hạng sách*/
+/* Bố cục chính */
+.ranking-container {
+    display: flex;
+    gap: 20px;
+    height: 600px; /* Giới hạn toàn khung */
+    overflow: hidden;
+    background: linear-gradient(135deg, #fceabb, #f8b500);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+/* Khung ảnh sách bên trái */
+.book-display {
+    flex: 0 0 40%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Ảnh chiếm tối đa khung */
+#selectedBookImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+/* Khung danh sách bên phải */
+.book-list {
+    flex: 1;
+    max-height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+}
+
+    .book-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .book-list::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+    }
+
+/* Mỗi item sách */
+.book-item {
+    min-height: 110px;
+    transition: background-color 0.2s, transform 0.1s;
+    cursor: pointer;
+}
+
+    .book-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+
+/* Responsive: Mobile sẽ xếp dọc */
+@media (max-width: 768px) {
+    .ranking-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .book-display {
+        width: 100%;
+        height: 300px;
+    }
+
+    .book-list {
+        max-height: none;
+    }
+
+    #selectedBookImage {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+/*Danh mục sản phẩm */
+/* Wrapper danh mục */
+.category-section-wrapper {
+    background: linear-gradient(135deg, #2c3e50, #3498db) !important;
+    border-radius: 0.5rem;
+    box-shadow: 10px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Mỗi slide là 1 danh mục */
+.swiper-slide .category-item {
+    transition: transform 0.3s ease;
+}
+
+    .swiper-slide .category-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+/* Ảnh danh mục */
+.category-item img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* Tên thể loại */
+.category-item .genre-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #e74c3c;
+    margin-top: 0.25rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Swiper button chỉnh lại vị trí và màu */
+.swiper-button-prev,
+.swiper-button-next {
+    color: #e74c3c;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+    .swiper-button-prev::after,
+    .swiper-button-next::after {
+        font-size: 20px;
+        font-weight: bold;
+    }
+/*sách nổi bật*/
+/* Gradient nền cho phần Sách nổi bật */
+.featured-books-section {
+    background: linear-gradient(to right, #2c3e50, #16a085) !important;
+    color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.card-title {
+    color: black
+}

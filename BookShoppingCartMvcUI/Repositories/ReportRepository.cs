@@ -20,10 +20,20 @@ public class ReportRepository : IReportRepository
         var topFiveSoldBooks = await _context.Database.SqlQueryRaw<TopNSoldBookModel>("exec Usp_GetTopNSellingBooksByDate @startDate,@endDate", startDateParam, endDateParam).ToListAsync();
         return topFiveSoldBooks;
     }
+    public async Task<IEnumerable<TopNSoldBookModel>> GetTopNSellingBooksAllTime()
+    {
+        var result = await _context.Database.SqlQueryRaw<TopNSoldBookModel>(
+            "EXEC Usp_GetTopNSellingBooksAllTime"
+        ).ToListAsync();
+
+        return result;
+    }
 
 }
 
 public interface IReportRepository
 {
     Task<IEnumerable<TopNSoldBookModel>> GetTopNSellingBooksByDate(DateTime startDate, DateTime endDate);
+    Task<IEnumerable<TopNSoldBookModel>> GetTopNSellingBooksAllTime();
+
 }

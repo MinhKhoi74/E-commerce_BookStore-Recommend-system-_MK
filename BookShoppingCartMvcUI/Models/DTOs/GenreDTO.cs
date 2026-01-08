@@ -9,5 +9,6 @@ namespace BookShoppingCartMvcUI.Models.DTOs
         [Required]
         [MaxLength(40)]
         public string GenreName { get; set; }
+        public string? ThumbnailImage { get; set; }
     }
 }

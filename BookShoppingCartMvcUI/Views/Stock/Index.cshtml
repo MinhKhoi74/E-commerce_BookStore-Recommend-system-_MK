@@ -2,19 +2,19 @@
 @{
     Layout = "_AdminLayout";
 }
-<h2>Stocks</h2>
+<h2>Tồn kho</h2>
 
 <form asp-action="Index" method="get" class="my-2 d-flex gap-2">
-    <input type="text" name="sTerm" class="form-control w-25" placeholder="Search by book" />
-    <button type="submit" class="btn btn-primary">Find</button>
-    <a asp-action="Index" asp-controller="Stock" class="btn btn-primary">Clear</a>
+    <input type="text" name="sTerm" class="form-control w-25" placeholder="Tìm sách" />
+    <button type="submit" class="btn btn-primary">Tìm</button>
+    <a asp-action="Index" asp-controller="Stock" class="btn btn-primary">Xóa</a>
 </form>
 
 <table class="table table-bordered">
   <tr>
-    <th>Book</th>
-    <th>Stock</th>
-    <th>Actions</th>
+    <th>Sách</th>
+    <th>Tồn kho</th>
+    <th>Thao tác</th>
   </tr>
   @foreach(var item in Model)
   {
@@ -22,7 +22,7 @@
       <td>@item.BookName</td>
       <td>@item.Quantity</td>
       <td>
-         <a asp-action="ManangeStock" asp-controller="Stock" asp-route-bookId="@item.BookId" class="btn btn-info"> Update Stock</a>
+         <a asp-action="ManangeStock" asp-controller="Stock" asp-route-bookId="@item.BookId" class="btn btn-info"> Cập nhật</a>
       </td>
     </tr>
   }

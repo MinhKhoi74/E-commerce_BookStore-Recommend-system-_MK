@@ -1,0 +1,83 @@
+﻿@model IEnumerable<BookShoppingCartMvcUI.Models.DTOs.TopNSoldBookModel>
+@{
+    var top5Books = Model.Take(5).ToList();
+}
+<div class="best-seller-sidebar p-3 rounded-3 shadow-sm bg-white h-100">
+
+    <h5 class="fw-bold mb-3 text-danger">
+        <i class="bi bi-fire-fill me-1"></i> Top 5 sách bán chạy
+    </h5>
+
+    <!-- Danh sách sách bán chạy -->
+    <div class="best-seller-list" style="max-height: 420px;overflow-y: auto; overflow-x: hidden;">
+        @foreach (var book in top5Books.Select((value, index) => new { value, index }))
+        {
+            var bookItem = book.value;
+            var rank = book.index + 1;
+            var imagePath = !string.IsNullOrEmpty(bookItem.Image)
+            ? Url.Content("~/images/" + bookItem.Image)
+            : Url.Content("~/images/NoImage.png");
+
+            <a asp-controller="DetailedBook"
+               asp-action="Details"
+               asp-route-id="@bookItem.BookId"
+               class="d-flex align-items-center p-2 mb-2 rounded-3 text-decoration-none text-dark shadow-sm best-seller-item">
+
+                <!-- Rank -->
+                <div class="rank-badge d-flex align-items-center justify-content-center text-white fw-bold me-3 rounded"
+                     style="width:35px; height:35px; background: linear-gradient(135deg, #ff7b3d, #ff3d00); box-shadow: 0 2px 6px rgba(255,77,0,0.5);">
+                    @rank
+                </div>
+
+                <!-- Ảnh sách -->
+                <div class="flex-shrink-0 me-3" style="width:55px; height:75px; overflow:hidden;">
+                    <img src="@imagePath" class="img-fluid rounded" style="width:100%; height:100%; object-fit:cover;" />
+                </div>
+
+                <!-- Thông tin sách -->
+                <div class="flex-grow-1">
+                    <div class="fw-semibold small text-dark">@bookItem.BookName</div>
+                    <div class="small" style="color:#ff4f00;">Đã bán: @bookItem.TotalUnitSold.ToString("N0")</div>
+                </div>
+            </a>
+        }
+    </div>
+    <style>
+        /* Hover item */
+        .best-seller-item {
+            transition: all 0.3s ease;
+        }
+
+            .best-seller-item:hover {
+                background: linear-gradient(120deg, #fff0eb, #ffe0d4);
+                transform: translateX(5px);
+                box-shadow: 0 5px 15px rgba(255,77,0,0.4);
+                cursor: pointer;
+            }
+
+                /* Rank badge pop effect */
+                .best-seller-item:hover .rank-badge {
+                    transform: scale(1.3);
+                    background: linear-gradient(135deg, #ffae5c, #ff3d00);
+                    box-shadow: 0 5px 15px rgba(255,77,0,0.6);
+                    transition: all 0.3s ease;
+                }
+
+        /* Scroll đẹp hơn */
+        .best-seller-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .best-seller-list::-webkit-scrollbar-thumb {
+            background-color: #ff6b3d;
+            border-radius: 3px;
+        }
+
+        .best-seller-list::-webkit-scrollbar-track {
+            background-color: #ffece5;
+            border-radius: 3px;
+        }
+    </style>
+
+</div>
+

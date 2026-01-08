@@ -93,6 +93,23 @@ namespace BookShoppingCartMvcUI.Repositories
             var cartItemCount = await GetCartItemCount(userId);
             return cartItemCount;
         }
+        public async Task<decimal> GetCartTotal(string userId = "")
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                userId = GetUserId();
+            }
+
+            var total = await (from cart in _db.ShoppingCarts
+                               join cartDetail in _db.CartDetails
+                                   on cart.Id equals cartDetail.ShoppingCartId
+                               where cart.UserId == userId
+                               select (decimal)(cartDetail.Quantity * cartDetail.UnitPrice))
+                               .SumAsync();
+
+            return total;
+        }
+
 
         public async Task<ShoppingCart> GetUserCart()
         {
@@ -125,7 +142,7 @@ namespace BookShoppingCartMvcUI.Repositories
             var data = await (from cart in _db.ShoppingCarts
                               join cartDetail in _db.CartDetails
                               on cart.Id equals cartDetail.ShoppingCartId
-                              where cart.UserId==userId // updated line
+                              where cart.UserId == userId // updated line
                               select new { cartDetail.Id }
                         ).ToListAsync();
             return data.Count;
@@ -155,17 +172,18 @@ namespace BookShoppingCartMvcUI.Repositories
                 {
                     UserId = userId,
                     CreateDate = DateTime.UtcNow,
-                    Name=model.Name,
-                    Email=model.Email,
-                    MobileNumber=model.MobileNumber,
-                    PaymentMethod=model.PaymentMethod,
-                    Address=model.Address,
-                    IsPaid=false,
+                    Name = model.Name,
+                    Email = model.Email,
+                    MobileNumber = model.MobileNumber,
+                    PaymentMethod = model.PaymentMethod,
+                    TotalAmount = (decimal)cartDetail.Sum(x => x.Quantity * x.UnitPrice),
+                    Address = model.Address,
+                    IsPaid = false,
                     OrderStatusId = pendingRecord.Id
                 };
                 _db.Orders.Add(order);
                 _db.SaveChanges();
-                foreach(var item in cartDetail)
+                foreach (var item in cartDetail)
                 {
                     var orderDetail = new OrderDetail
                     {
@@ -204,6 +222,17 @@ namespace BookShoppingCartMvcUI.Repositories
 
                 return false;
             }
+        }
+        public async Task ClearCart()
+        {
+            var userId = GetUserId();
+            var cart = await GetCart(userId);
+
+            if (cart == null) return;
+
+            var items = _db.CartDetails.Where(c => c.ShoppingCartId == cart.Id);
+            _db.CartDetails.RemoveRange(items);
+            await _db.SaveChangesAsync();
         }
 
         private string GetUserId()

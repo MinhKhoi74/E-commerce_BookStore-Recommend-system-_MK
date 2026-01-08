@@ -1,0 +1,19 @@
+﻿@model BookShoppingCartMvcUI.Models.DTOs.BookDTO
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="swiper-slide card p-2">
+    <a asp-controller="DetailedBook" asp-action="Details" asp-route-id="@Model.Id">
+        <img src="@Url.Content("~/images/" + (string.IsNullOrEmpty(Model.Image) ? "NoImage.png" : Model.Image))"
+             class="card-img-top" alt="@Model.BookName"
+             style="height: 220px; object-fit: cover;" />
+    </a>
+    <div class="card-body p-2">
+        <h6 class="card-title text-truncate">@Model.BookName</h6>
+        <p class="text-danger fw-bold mb-2">@Model.Price.ToString("N0") đ</p>
+
+        <button class="btn btn-sm btn-outline-danger w-100"
+                onclick="addToCart(@Model.Id)">
+            <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng
+        </button>
+    </div>
+</div>

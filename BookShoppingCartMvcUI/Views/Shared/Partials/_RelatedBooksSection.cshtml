@@ -1,0 +1,64 @@
+﻿@model BookShoppingCartMvcUI.Models.DTOs.BooksByGenreSectionModel
+
+<div class="recommendation-section mb-5">
+    <!-- Header -->
+    <div class="recommendation-header rounded px-3 py-2 d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0 fw-bold d-flex align-items-center">
+            <i class="bi bi-book-half me-2 text-warning"></i> Sách cùng thể loại
+        </h5>
+        <div>
+            <a asp-controller="Home" asp-action="Index" asp-route-genreId="@Model.GenreId" class="text-white text-decoration-none">Xem tất cả</a>
+        </div>
+    </div>
+
+    <!-- Swiper -->
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            @foreach (var book in Model.Books)
+            {
+                <div class="swiper-slide">
+                    <partial name="~/Views/Shared/Partials/_BookCard.cshtml" model="book" />
+                </div>
+            }
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+
+        <!-- Pagination dots -->
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
+
+<style>
+    .recommendation-section {
+        background: linear-gradient(to right, #2c3e50, #16a085) !important;
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 30px 25px;
+    }
+
+    .recommendation-header {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        border-radius: 15px;
+    }
+
+    .swiper-slide {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .swiper-slide:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-title {
+        color: black !important;
+    }
+
+    a.text-white:hover {
+        text-decoration: underline;
+    }
+</style>
